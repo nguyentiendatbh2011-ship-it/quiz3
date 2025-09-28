@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trò chơi Túi Bí Ẩn 🎁</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600&display=swap');
+
+    body {
+      font-family: 'Baloo 2', cursive;
+      background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+      text-align: center;
+      padding: 30px;
+      color: #333;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 40px;
+      color: #ff5c8d;
+      text-shadow: 2px 2px #fff;
+      margin-bottom: 30px;
+    }
+
+    .bag {
+      display: inline-block;
+      width: 150px;
+      height: 150px;
+      line-height: 150px;
+      background: #fff3cd;
+      border-radius: 20px;
+      margin: 15px;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .bag:hover {
+      transform: scale(1.1) rotate(-3deg);
+      background: #ffe0ac;
+    }
+
+    #quizBox {
+      margin-top: 30px;
+      padding: 25px;
+      background: linear-gradient(135deg, #fff8e7, #ffe0f0); /* pastel dễ thương */
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      display: none;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      border: 2px dashed #ffb6c1;
+      position: relative;
+      z-index: 1;
+    }
+
+    #quizBox::before {
+      content: "";
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 80px;
+      height: 80px;
+      background: url('https://www.example.com/images/cute-cat.png') no-repeat center/contain; /* mèo cute */
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    #quizBox::after {
+      content: "";
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      width: 80px;
+      height: 80px;
+      background: url('https://www.example.com/images/cute-rabbit.png') no-repeat center/contain; /* thỏ cute */
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    #quizQuestion {
+      font-size: 28px;
+      margin: 20px 0;
+      color: #333;
+      position: relative;
+      z-index: 1;
+    }
+
+    #quizOptions {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .optionBtn {
+      text-align: left;
+      padding-left: 20px;
+      border-radius: 20px;
+      background: #ffdce6;
+      color: #333;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .optionBtn:hover {
+      background: #ffb6c1;
+      transform: scale(1.05);
+    }
+
+    button.checkBtn {
+      padding: 12px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 25px;
+      background: #ff9aa2;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    button.checkBtn:hover {
+      transform: scale(1.05);
+      background: #ff758f;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎀 Trò chơi Túi Bí Ẩn 🎀</h1>
+
+  <div class="bag" onclick="openBag(0)">🎁 Túi 1</div>
+  <div class="bag" onclick="openBag(1)">🎁 Túi 2</div>
+  <div class="bag" onclick="openBag(2)">🎁 Túi 3</div>
+  <div class="bag" onclick="openBag(3)">🎁 Túi 4</div>
+  <div class="bag" onclick="openBag(4)">🎁 Túi 5</div>
+
+  <div id="quizBox">
+    <div id="quizQuestion"></div>
+    <div id="quizOptions"></div>
+    <button class="checkBtn" onclick="checkAnswer()">Kiểm tra đáp án ✅</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        q: "Trường THPT Buôn Hồ được thành lập vào năm nào?",
+        a: ["A. 1975", "B. 1977", "C. 1980", "D. 1985"],
+        correct: 1
+      },
+      {
+        q: "Trường THPT Chuyên Nguyễn Du được thành lập vào năm nào?",
+        a: ["A. 1975", "B. 1978", "C. 1981", "D. 1996"], // D = 1996 là đáp án đúng
+        correct: 3
+      },
+      {
+        q: "Trường THPT Đông Du nằm ở thành phố nào của Đắk Lắk?",
+        a: ["A. Buôn Ma Thuột", "B. Buôn Hồ", "C. Ea Kar", "D. Krông Pắk"],
+        correct: 0
+      },
+      {
+        q: "Câu hỏi khó: Trường THPT Chuyên Nguyễn Du được thành lập để đào tạo học sinh giỏi môn nào đầu tiên?",
+        a: ["A. Toán – Lý – Hóa", "B. Văn – Sử – Địa", "C. Sinh – Tin – Ngoại ngữ", "D. Thể dục – Nghệ thuật"],
+        correct: 0
+      },
+      {
+        q: "Hiện nay trường THPT Buôn Hồ có bao nhiêu học sinh?",
+        a: ["A. 1000", "B. 1200", "C. 1500", "D. 2000"],
+        correct: 1
+      }
+    ];
+
+    let currentQuestion = null;
+    let selectedAnswer = null;
+
+    function openBag(index) {
+      currentQuestion = questions[index];
+      selectedAnswer = null;
+      document.getElementById("quizBox").style.display = "block";
+      document.getElementById("quizQuestion").textContent = currentQuestion.q;
+      document.getElementById("result").textContent = "";
+
+      const optionsDiv = document.getElementById("quizOptions");
+      optionsDiv.innerHTML = "";
+      currentQuestion.a.forEach((option, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = option;
+        btn.className = "optionBtn";
+        btn.onclick = () => { 
+          selectedAnswer = i; 
+          Array.from(optionsDiv.children).forEach(b => b.style.background = "#ffdce6");
+          btn.style.background = "#ffb6c1";
+        };
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer() {
+      if (selectedAnswer === null) {
+        document.getElementById("result").textContent = "⚠️ Hãy chọn một đáp án trước!";
+        document.getElementById("result").style.color = "orange";
+        return;
+      }
+      if (selectedAnswer === currentQuestion.correct) {
+        document.getElementById("result").textContent = "🎉 Chính xác! Bạn giỏi quá!";
+        document.getElementById("result").style.color = "green";
+      } else {
+        document.getElementById("result").textContent = "❌ Sai rồi! Thử lại nhé!";
+        document.getElementById("result").style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
